@@ -1,9 +1,11 @@
-import firebase from 'firebase/app'
-import { FIREBASE_CONFIG } from '../config/vars'
+import firebase from 'firebase'
+import { FIREBASE_CONFIG, FIREBASE_DB_TIMER_PREFIX } from '../config/vars'
 
 firebase.initializeApp(FIREBASE_CONFIG)
 
-export default {
-  db: firebase.database().ref(),
-  timestamp: firebase.database.ServerValue.TIMESTAMP
+const store = {
+  db: firebase.database().ref(FIREBASE_DB_TIMER_PREFIX),
+  timestamp: firebase.database.ServerValue.TIMESTAMP,
 }
+
+export default store

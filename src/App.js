@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Router, Route, browserHistory } from 'react-router'
+import { Router, Route } from 'react-router'
 import { StyleRoot, Style } from 'radium'
 
 import { FirebaseAuthProvider } from '@react-firebase/auth'
@@ -7,6 +7,8 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 
 import { COLOURS, SIZE, FIREBASE_CONFIG } from './config/vars'
+
+import history from './stores/BrowserHistoryStore'
 
 import Home from './pages/Home'
 import Live from './pages/Live'
@@ -38,10 +40,10 @@ class App extends Component {
       <StyleRoot>
         <Style rules={styles} />
         <FirebaseAuthProvider {...FIREBASE_CONFIG} firebase={firebase}>
-          <Router history={browserHistory}>
-            <Route path='/' component={Home} />
-            <Route path='/:path' component={View} />
-            <Route path='/admin/:path' component={Live} />
+          <Router history={history}>
+            <Route path={'/'} component={Home} />
+            <Route path={'/:path'} component={View} />
+            <Route path={'/admin/:path'} component={Live} />
           </Router>
         </FirebaseAuthProvider>
       </StyleRoot>

@@ -1,9 +1,11 @@
 import { action, observable, reaction } from 'mobx'
 
-import firebase from './FirebaseStore'
+import store from './FirebaseStore'
 import UiState from './UiState'
 
-class TimerStore {
+export default class TimerStore {
+  static myInstance = null
+
   @observable path = ''
   @observable isClearPath = false
   @observable message = ''
@@ -14,6 +16,14 @@ class TimerStore {
     hours: 0,
     minutes: 0,
     seconds: 0
+  }
+
+  static getInstance() {
+    if (TimerStore.myInstance == null) {
+      TimerStore.myInstance = new TimerStore()
+    }
+
+    return this.myInstance
   }
 
   constructor() {
@@ -38,7 +48,7 @@ class TimerStore {
 
   checkForClearPath() {
     return new Promise((resolve, reject) => {
-      firebase.db.once('value').then((snapshot) => {
+      store.db.once('value').then((snapshot) => {
         if (snapshot.hasChild(this.path)) {
           resolve(false)
         } else {
@@ -66,31 +76,33 @@ class TimerStore {
 
   createTimer() {
     if (this.path !== '') {
-      return firebase.db.child(this.path).set({
-        createdAt: firebase.timestamp,
-        endTime: firebase.timestamp,
+      return store.db.child(this.path).set({
+        createdAt: store.timestamp,
+        endTime: store.timestamp,
         message: "Countdown",
       })
     }
   }
 
   @action subscribeToTimerUpdates() {
-    firebase.db.child(this.path).on('value', (snapshot) => {
+    store.db.child(this.path).on('value', (snapshot) => {
       let data = snapshot.val()
-      this.timer.createdAt = data.createdAt
-      this.timer.endTime = data.endTime
-      this.message = data.message
+      if (data) {
+        this.timer.createdAt = data.createdAt
+        this.timer.endTime = data.endTime
+        this.message = data.message
+      }
     })
     UiState.loading = false
   }
 
   clearOldFirebaseTimers() {
-    firebase.db.once('value').then((snapshot) => {
+    store.db.once('value').then((snapshot) => {
       snapshot.forEach((timer) => {
         let hours = (new Date(timer.val().endTime) - new Date()) / 1000 / 60 / 60
         // Delete timer if finished over 24 hours ago
         if (hours < -24) {
-          firebase.db.child(timer.key).remove()
+          store.db.child(timer.key).remove()
         }
       })
     })
@@ -98,17 +110,14 @@ class TimerStore {
 
   setTime = (minutes) => {
     let endTime = new Date().getTime() + minutes * 60 * 1000 + 1000
-    firebase.db.child(this.path).update({
+    store.db.child(this.path).update({
       endTime: endTime
     })
   }
 
   setMessage = (msg) =>{
-    firebase.db.child(this.path).update({
+    store.db.child(this.path).update({
       message: msg
     })
   }
 }
-
-const timerStore = new TimerStore()
-export default timerStore

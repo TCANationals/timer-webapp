@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { browserHistory } from 'react-router'
 
+import history from '../stores/BrowserHistoryStore'
 import TimerStore from '../stores/TimerStore'
 
 import Clock from '../components/Clock'
@@ -11,9 +11,13 @@ import TimerLink from '../components/TimerLink'
 import TimerControls from '../components/TimerControls'
 
 class Live extends Component {
+
+  timerStoreInstance = null
+
   constructor() {
     super()
-    TimerStore.resetTimer()
+    this.timerStoreInstance = TimerStore.getInstance()
+    this.timerStoreInstance.resetTimer()
   }
 
   componentWillMount() {
@@ -21,11 +25,11 @@ class Live extends Component {
   }
 
   checkTimerExists() {
-    TimerStore.setPath(this.props.params.path)
-    TimerStore.checkForClearPath().then((isClearPath) => {
+    this.timerStoreInstance.setPath(this.props.match.params.path)
+    this.timerStoreInstance.checkForClearPath().then((isClearPath) => {
       if (isClearPath) {
         // No timer at this URL therefore redirect home
-        browserHistory.push('/')
+        history.push('/')
       }
     })    
   }

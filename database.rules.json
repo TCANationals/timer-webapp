@@ -1,0 +1,14 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "timers": {
+      ".read": true,
+      ".write": "root.child('allowedUids').child(auth.uid).exists()"
+    },
+    "allowedUids": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { browserHistory } from 'react-router'
 import { observer } from 'mobx-react'
 
 import { APP_NAME } from '../config/vars'
+import history from '../stores/BrowserHistoryStore'
 import TimerStore from '../stores/TimerStore'
 import UiState from '../stores/UiState'
 
@@ -15,15 +15,19 @@ import TimerLink from '../components/TimerLink'
 
 @observer
 class Home extends Component {
+
+  timerStoreInstance = null
+
   constructor() {
     super()
+    this.timerStoreInstance = TimerStore.getInstance()
     document.title = APP_NAME
     UiState.hasLink = true
   }
 
   handleCreateTimerButton() {
-    TimerStore.createTimer().then(() => {
-      browserHistory.push(TimerStore.path)
+    this.timerStoreInstance.createTimer().then(() => {
+      history.push(this.timerStoreInstance.path)
     })
   }
 
@@ -34,7 +38,7 @@ class Home extends Component {
         <FullScreenButton />
         <TimerLink hasLink={true} />
         <CustomPathInput />
-        <Button text='Create timer' type='success' onClick={this.handleCreateTimerButton} isDisabled={!TimerStore.isClearPath} noMarginRight />
+        <Button text='Create timer' type='success' onClick={this.handleCreateTimerButton} isDisabled={!this.timerStoreInstance.isClearPath} noMarginRight />
         <Footer />
       </div>
     )

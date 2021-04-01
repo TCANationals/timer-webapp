@@ -5,8 +5,7 @@ import { observer } from 'mobx-react'
 
 import { COLOURS, SIZE } from '../config/vars.js'
 
-@observer
-class Clock extends Component {
+@observer class Clock extends Component {
   @observable time = {
     hours: 0,
     minutes: 0

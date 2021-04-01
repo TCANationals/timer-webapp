@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import FontAwesome from 'react-fontawesome'
 import Radium from 'radium'
 import { COLOURS, SIZE, BP } from '../config/vars.js'
@@ -85,13 +86,13 @@ class Button extends Component {
 }
 
 Button.propTypes = {
-  text: React.PropTypes.string,
-  icon: React.PropTypes.string,
-  type: React.PropTypes.oneOf(['info', 'success', 'danger', 'transparent']),
-  onClick: React.PropTypes.func,
-  noMarginRight: React.PropTypes.bool,
-  isDisabled: React.PropTypes.bool,
-  isHidden: React.PropTypes.bool,
+  text: PropTypes.string,
+  icon: PropTypes.string,
+  type: PropTypes.oneOf(['info', 'success', 'danger', 'transparent']),
+  onClick: PropTypes.func,
+  noMarginRight: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  isHidden: PropTypes.bool,
 }
 
 export default Radium(Button)

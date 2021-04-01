@@ -1,26 +1,30 @@
 import React, { Component } from 'react'
-import { browserHistory } from 'react-router'
 
+import history from '../stores/BrowserHistoryStore'
 import TimerStore from '../stores/TimerStore'
 
 import Timer from '../components/Timer'
 
 class View extends Component {
+
+  timerStoreInstance = null
+
   constructor() {
     super()
-    TimerStore.resetTimer()
   }
 
   componentWillMount() {
+    this.timerStoreInstance = TimerStore.getInstance()
+    this.timerStoreInstance.resetTimer()
     this.checkTimerExists()
   }
 
   checkTimerExists() {
-    TimerStore.setPath(this.props.params.path)
-    TimerStore.checkForClearPath().then((isClearPath) => {
+    this.timerStoreInstance.setPath(this.props.match.params.path)
+    this.timerStoreInstance.checkForClearPath().then((isClearPath) => {
       if (isClearPath) {
         // No timer at this URL therefore redirect home
-        browserHistory.push('/')
+        history.push('/')
       }
     })    
   }
