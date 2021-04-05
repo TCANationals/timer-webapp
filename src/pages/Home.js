@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
+import { browserHistory } from 'react-router'
 import { observer } from 'mobx-react'
 
 import { APP_NAME } from '../config/vars'
-import history from '../stores/BrowserHistoryStore'
 import TimerStore from '../stores/TimerStore'
 import UiState from '../stores/UiState'
 
@@ -13,21 +13,19 @@ import Footer from '../components/Footer'
 import FullScreenButton from '../components/FullScreenButton'
 import TimerLink from '../components/TimerLink'
 
+import { IfFirebaseAuthed } from '../modules/auth/FirebaseAuthProvider'
+
 @observer
 class Home extends Component {
-
-  timerStoreInstance = null
-
   constructor() {
     super()
-    this.timerStoreInstance = TimerStore.getInstance()
     document.title = APP_NAME
     UiState.hasLink = true
   }
 
   handleCreateTimerButton() {
-    this.timerStoreInstance.createTimer().then(() => {
-      history.push(this.timerStoreInstance.path)
+    TimerStore.createTimer().then(() => {
+      browserHistory.push(TimerStore.path)
     })
   }
 
@@ -38,7 +36,9 @@ class Home extends Component {
         <FullScreenButton />
         <TimerLink hasLink={true} />
         <CustomPathInput />
-        <Button text='Create timer' type='success' onClick={this.handleCreateTimerButton} isDisabled={!this.timerStoreInstance.isClearPath} noMarginRight />
+        <IfFirebaseAuthed>
+          <Button text='Create timer' type='success' onClick={this.handleCreateTimerButton} isDisabled={!TimerStore.isClearPath} noMarginRight />
+        </IfFirebaseAuthed>
         <Footer />
       </div>
     )

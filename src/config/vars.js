@@ -21,9 +21,9 @@ export const SIZE = {
 }
 
 export const BP = {
-  SMALL: '@media screen and (minWidth: 768px)',
-  MEDIUM: '@media screen and (minWidth: 992px)',
-  LARGE: '@media screen and (minWidth: 1200px)',
+  SMALL: '@media screen and (min-width: 768px)',
+  MEDIUM: '@media screen and (min-width: 992px)',
+  LARGE: '@media screen and (min-width: 1200px)',
 }
 
 export const FIREBASE_CONFIG = {
@@ -34,6 +34,7 @@ export const FIREBASE_CONFIG = {
   messagingSenderId: "551931464028",
   appId: "1:551931464028:web:9fc72950f2e08168e29999",
   measurementId: "G-LXHKF0XXEE",
+  databaseURL: "tca-timer-default-rtdb.firebaseio.com",
 }
 
 export const FIREBASE_DB_TIMER_PREFIX = 'timers'

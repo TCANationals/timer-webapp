@@ -5,10 +5,12 @@ import { observer } from 'mobx-react'
 
 import { COLOURS, SIZE } from '../config/vars.js'
 
-@observer class Clock extends Component {
+@observer
+class Clock extends Component {
   @observable time = {
     hours: 0,
-    minutes: 0
+    minutes: 0,
+    seconds: 0
   }
 
   constructor() {
@@ -29,6 +31,7 @@ import { COLOURS, SIZE } from '../config/vars.js'
     let now = new Date()
     this.time.hours = this.prependZeroCheck(now.getHours())
     this.time.minutes = this.prependZeroCheck(now.getMinutes())
+    this.time.seconds = this.prependZeroCheck(now.getSeconds())
   }
 
   prependZeroCheck(number) {
@@ -55,7 +58,7 @@ import { COLOURS, SIZE } from '../config/vars.js'
 
     return (
       <div style={styles.clock}>
-        {this.time.hours}:{this.time.minutes}
+        {this.time.hours}:{this.time.minutes}:{this.time.seconds}
       </div>
     )
   }

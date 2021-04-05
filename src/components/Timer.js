@@ -9,46 +9,47 @@ import UiState from '../stores/UiState'
 
 @observer
 class Timer extends Component {
-
-  timerStoreInstance = null
-
-  constructor() {
-    super()
-  }
-
   componentWillMount() {
-    this.timerStoreInstance = TimerStore.getInstance()
-    this.timerStoreInstance.subscribeToTimerUpdates()
+    TimerStore.subscribeToTimerUpdates()
     this.calculateTime()
-    this.timerStoreInstance.timer.timerRef = window.setInterval(() => this.calculateTime(), 1000)
+    TimerStore.timer.timerRef = window.setInterval(() => this.calculateTime(), 1000)
   }
 
   componentWillUnmount() {
-    window.clearInterval(this.timerStoreInstance.timer.timerRef)
+    window.clearInterval(TimerStore.timer.timerRef)
+  }
+
+  prependZeroCheck(number) {
+    let string = number.toString()
+    if (string.length === 1) {
+      return '0' + string
+    }
+
+    return number
   }
 
   calculateTime() {
-    let totalSeconds = (new Date(this.timerStoreInstance.timer.endTime) - new Date()) / 1000
+    let totalSeconds = (new Date(TimerStore.timer.endTime) - new Date()) / 1000
     let hours = Math.floor(totalSeconds / 3600)
     let minutes = Math.floor((totalSeconds / 60) - (hours * 60))
     let seconds = Math.floor(totalSeconds - (minutes * 60) - (hours * 3600))
     if (hours >= 0) {
-      this.timerStoreInstance.timer.hours = hours
-      this.timerStoreInstance.timer.minutes = minutes
-      this.timerStoreInstance.timer.seconds = seconds
+      TimerStore.timer.hours = hours
+      TimerStore.timer.minutes = minutes
+      TimerStore.timer.seconds = seconds
     } else {
-      this.timerStoreInstance.timer.hours = 0
-      this.timerStoreInstance.timer.minutes = 0
-      this.timerStoreInstance.timer.seconds = 0
+      TimerStore.timer.hours = 0
+      TimerStore.timer.minutes = 0
+      TimerStore.timer.seconds = 0
     }
     document.title = this.generatePageTitle()
   }
 
   generatePageTitle() {
-    if(this.timerStoreInstance.timer.hours>0){
-      return this.timerStoreInstance.timer.hours + 'h ' + this.timerStoreInstance.timer.minutes + 'm ' + this.timerStoreInstance.timer.seconds + 's - ' + APP_NAME
+    if(TimerStore.timer.hours>0){
+      return TimerStore.timer.hours + 'h ' + TimerStore.timer.minutes + 'm ' + TimerStore.timer.seconds + 's - ' + APP_NAME
     }else{
-      return this.timerStoreInstance.timer.minutes + 'm ' + this.timerStoreInstance.timer.seconds + 's - ' + APP_NAME
+      return TimerStore.timer.minutes + 'm ' + TimerStore.timer.seconds + 's - ' + APP_NAME
     }
   }
 
@@ -94,13 +95,13 @@ class Timer extends Component {
     }
 
     if (!UiState.loading) {
-      if(this.timerStoreInstance.timer.hours > 0){
+      if(TimerStore. timer.hours > 0){
         return (
           <div>
             <div style={styles.timer}>
-              <h1 style={styles.h1}>{this.timerStoreInstance.timer.hours}<small style={styles.small}>H</small></h1>
-              <h1 style={styles.h1}>{this.timerStoreInstance.timer.minutes}<small style={styles.small}>M</small></h1>
-              <h1 style={[styles.h1, styles.noMarginRight]}>{this.timerStoreInstance.timer.seconds}<small style={styles.small}>S</small></h1>
+              <h1 style={styles.h1}>{TimerStore.timer.hours}<small style={styles.small}>H</small></h1>
+              <h1 style={styles.h1}>{TimerStore.timer.minutes}<small style={styles.small}>M</small></h1>
+              <h1 style={[styles.h1, styles.noMarginRight]}>{TimerStore.timer.seconds}<small style={styles.small}>S</small></h1>
             </div>
           </div>
         )
@@ -108,8 +109,8 @@ class Timer extends Component {
         return (
           <div>
             <div style={styles.timer}>
-              <h1 style={styles.h1}>{this.timerStoreInstance.timer.minutes}<small style={styles.small}>M</small></h1>
-              <h1 style={[styles.h1, styles.noMarginRight]}>{this.timerStoreInstance.timer.seconds}<small style={styles.small}>S</small></h1>
+              <h1 style={styles.h1}>{TimerStore.timer.minutes}<small style={styles.small}>M</small></h1>
+              <h1 style={[styles.h1, styles.noMarginRight]}>{TimerStore.timer.seconds}<small style={styles.small}>S</small></h1>
             </div>
           </div>
         )

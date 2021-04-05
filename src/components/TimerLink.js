@@ -13,11 +13,8 @@ class TimerLink extends Component {
   @observable tooltip = this.tooltipDefault
   @observable hasTooltip = false
 
-  timerStoreInstance = null
-
   constructor() {
     super()
-    this.timerStoreInstance = TimerStore.getInstance()
     this.baseUrl = window.location.protocol + '//' + window.location.host + '/'
     this.tooltipDefault = 'Click to copy to clipboard'
     this.onClick = this.onClick.bind(this)
@@ -26,7 +23,7 @@ class TimerLink extends Component {
   }
 
   onClick() {
-    let hasCopied = copy(this.baseUrl + this.timerStoreInstance.path)
+    let hasCopied = copy(this.baseUrl + TimerStore.path)
     if (hasCopied) {
       this.tooltip = 'Copied!'
       setTimeout(() => {
@@ -90,7 +87,7 @@ class TimerLink extends Component {
     return (
       <h1 onClick={this.onClick} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} style={styles.url}>
         <span style={styles.tooltip}>{this.tooltip}</span>
-        {this.baseUrl + this.timerStoreInstance.path}
+        {this.baseUrl + TimerStore.path}
       </h1>
     )
   }

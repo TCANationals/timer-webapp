@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
+import { browserHistory } from 'react-router'
 import Radium from 'radium'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 
 import { BP, COLOURS, SIZE } from '../config/vars.js'
-import history from '../stores/BrowserHistoryStore'
 import TimerStore from '../stores/TimerStore'
 import UiState from '../stores/UiState'
 
@@ -14,11 +14,8 @@ import Button from './Button'
 class TimerControls extends Component {
   @observable hasCustomTimeControls = false
 
-  timerStoreInstance = null
-
   constructor() {
     super()
-    this.timerStoreInstance = TimerStore.getInstance()
     this.setCustomTime = this.setCustomTime.bind(this)
     this.toggleCustomTimeControls = this.toggleCustomTimeControls.bind(this)
   }
@@ -31,12 +28,12 @@ class TimerControls extends Component {
     let input = document.getElementById('custom-time-input')
     let time = Number(input.value)
     if (Number.isInteger(time)) {
-      this.timerStoreInstance.setTime(time)
+      TimerStore.setTime(time)
     }
   }
   setCustomText() {
     let input = document.getElementById('custom-text-input')
-    this.timerStoreInstance.setMessage(input.value)
+    TimerStore.setMessage(input.value)
   }
 
   getControlsHeightProperty() {
@@ -48,7 +45,7 @@ class TimerControls extends Component {
   }
 
   navHome() {
-    history.push('/')
+    browserHistory.push('/')
   }
 
   render() {
@@ -110,14 +107,14 @@ class TimerControls extends Component {
               <span style={styles.hideOnMobile}>
                 <Button icon='eye' onClick={UiState.toggleLinkVisibility} />
               </span>
-              <Button icon='clock-o' text='1m' onClick={() => this.timerStoreInstance.setTime(1)} />
-              <Button icon='clock-o' text='10m' onClick={() => this.timerStoreInstance.setTime(10)} />
-              <Button icon='clock-o' text='12m' onClick={() => this.timerStoreInstance.setTime(12)} />
-              <Button icon='clock-o' text='30m'  onClick={() => this.timerStoreInstance.setTime(30)} />
-              <Button icon='clock-o' text='45m'  onClick={() => this.timerStoreInstance.setTime(45)} />
-              <Button icon='clock-o' text='1h'  onClick={() => this.timerStoreInstance.setTime(60)} />
+              <Button icon='clock-o' text='1m' onClick={() => TimerStore.setTime(1)} />
+              <Button icon='clock-o' text='10m' onClick={() => TimerStore.setTime(10)} />
+              <Button icon='clock-o' text='12m' onClick={() => TimerStore.setTime(12)} />
+              <Button icon='clock-o' text='30m'  onClick={() => TimerStore.setTime(30)} />
+              <Button icon='clock-o' text='45m'  onClick={() => TimerStore.setTime(45)} />
+              <Button icon='clock-o' text='1h'  onClick={() => TimerStore.setTime(60)} />
               <Button icon='clock-o' text='Custom' onClick={this.toggleCustomTimeControls} />
-              <Button icon='stop' onClick={() => this.timerStoreInstance.setTime(0)} noMarginRight />
+              <Button icon='stop' onClick={() => TimerStore.setTime(0)} noMarginRight />
             </div>
             <div style={[styles.customTimeControls, styles.container]}>
               <h6 style={styles.controlsHeader}>Set custom time (in minutes)</h6>
