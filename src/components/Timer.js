@@ -60,7 +60,13 @@ class Timer extends Component {
   render() {
     const styles = {
       timer: {
-        fontSize: this.getFontSizeProperty()
+        fontSize: this.getFontSizeProperty(),
+        textAlign: 'right',
+        marginRight: SIZE.px(4),
+        [BP.SMALL]: {
+          marginRight: 0,
+          textAlign: 'center'
+        }
       },
       msg:{
         display: 'inline-block',
@@ -72,6 +78,7 @@ class Timer extends Component {
       h1: {
         display: 'inline-block',
         fontSize: SIZE.em(5),
+        fontFamily: "'Roboto Mono', monospace",
         marginBottom: SIZE.px(2),
         marginRight: SIZE.px(4),
         marginTop: 0,
@@ -81,13 +88,18 @@ class Timer extends Component {
         [BP.LARGE] : {
           fontSize: SIZE.em(20),
         },
+        '-webkit-text-stroke-color': COLOURS.DARK_BLUE,
+        '-webkit-text-stroke-width': '1px',
       },
       noMarginRight: {
         marginRight: 0,
       },
       small: {
         color: COLOURS.DARK_BLUE,
+        '-webkit-text-stroke-color': COLOURS.WHITE,
+        '-webkit-text-stroke-width': '1px',
         fontSize: '50%',
+        fontFamily: 'sans-serif',
       },
       spinner: {
         display: 'block',
@@ -95,13 +107,12 @@ class Timer extends Component {
     }
 
     if (!UiState.loading) {
-      if(TimerStore. timer.hours > 0){
+      if (TimerStore.timer.hours > 0) {
         return (
           <div>
             <div style={styles.timer}>
               <h1 style={styles.h1}>{TimerStore.timer.hours}<small style={styles.small}>H</small></h1>
               <h1 style={styles.h1}>{TimerStore.timer.minutes}<small style={styles.small}>M</small></h1>
-              <h1 style={[styles.h1, styles.noMarginRight]}>{TimerStore.timer.seconds}<small style={styles.small}>S</small></h1>
             </div>
           </div>
         )

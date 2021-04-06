@@ -3,12 +3,7 @@ import { browserHistory } from 'react-router'
 
 import TimerStore from '../stores/TimerStore'
 
-import Clock from '../components/Clock'
-import Footer from '../components/Footer'
-import FullScreenButton from '../components/FullScreenButton'
 import Timer from '../components/Timer'
-import TimerLink from '../components/TimerLink'
-import TimerControls from '../components/TimerControls'
 
 class View extends Component {
   constructor() {

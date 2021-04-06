@@ -3,9 +3,11 @@ import { Router, Route, browserHistory } from 'react-router'
 import { StyleRoot, Style } from 'radium'
 import firebase from 'firebase'
 
-import { COLOURS, SIZE, FIREBASE_CONFIG } from './config/vars.js'
+import { COLOURS, FIREBASE_CONFIG } from './config/vars.js'
 
 import { FirebaseAuthProvider } from "./modules/auth/FirebaseAuthProvider";
+
+import StyleWrapper from './components/StyleWrapper'
 
 import Home from './pages/Home'
 import Live from './pages/Live'
@@ -15,15 +17,19 @@ class App extends Component {
   render() {
     const styles = {
       html: {
+        width: '100%',
+        height: '100%',
         backgroundColor: COLOURS.BLUE,
       },
       body: {
         color: COLOURS.WHITE,
         fontFamily: 'sans-serif',
-        marginBottom: SIZE.px(20),
+        marginBottom: 0,
         marginLeft: 0,
         marginRight: 0,
-        marginTop: SIZE.px(20),
+        marginTop: 0,
+        width: '100%',
+        height: '100%',
         padding: 0,
         textAlign: 'center',
       },
@@ -36,13 +42,15 @@ class App extends Component {
     return (
       <StyleRoot>
         <Style rules={styles} />
-        <FirebaseAuthProvider {...FIREBASE_CONFIG} firebase={firebase}>
-          <Router history={browserHistory}>
-            <Route path='/' component={Home} />
-            <Route path='/:path' component={View} />
-            <Route path='/admin/:path' component={Live} />
-          </Router>
-        </FirebaseAuthProvider>
+        <StyleWrapper>
+          <FirebaseAuthProvider {...FIREBASE_CONFIG} firebase={firebase}>
+            <Router history={browserHistory}>
+              <Route path='/' component={Home} />
+              <Route path='/:path' component={View} />
+              <Route path='/admin/:path' component={Live} />
+            </Router>
+          </FirebaseAuthProvider>
+        </StyleWrapper>
       </StyleRoot>
     )
   }

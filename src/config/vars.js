@@ -1,4 +1,4 @@
-export const APP_NAME = 'TCA Clock'
+export const APP_NAME = 'TCA Timer'
 
 export const COLOURS = {
   BLUE: '#636363',
@@ -21,6 +21,7 @@ export const SIZE = {
 }
 
 export const BP = {
+  DISPLAY: '@media screen and (max-height: 300px)',
   SMALL: '@media screen and (min-width: 768px)',
   MEDIUM: '@media screen and (min-width: 992px)',
   LARGE: '@media screen and (min-width: 1200px)',
