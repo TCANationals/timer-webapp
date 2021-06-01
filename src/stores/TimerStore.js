@@ -18,7 +18,7 @@ class TimerStore {
 
   constructor() {
     this.subscribeToPathChecks()
-    this.clearOldFirebaseTimers()
+    //this.clearOldFirebaseTimers()
   }
 
   @action resetTimer() {
