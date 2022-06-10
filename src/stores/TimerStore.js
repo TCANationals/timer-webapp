@@ -11,7 +11,6 @@ class TimerStore {
     timerRef: null,
     createdAt: null,
     endTime: null,
-    offset: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
@@ -27,7 +26,6 @@ class TimerStore {
       timerRef: null,
       createdAt: null,
       endTime: null,
-      offset: 0,
       hours: 0,
       minutes: 0,
       seconds: 0
@@ -85,7 +83,7 @@ class TimerStore {
       let data = snapshot.val()
       this.timer.createdAt = data.createdAt
       this.timer.endTime = data.endTime
-      this.timer.offset = firebase.offset
+      this.timer.timerRef = firebase
       this.message = data.message
     })
     UiState.loading = false
