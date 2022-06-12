@@ -107,7 +107,7 @@ class TimerStore {
   }
 
   setTime = (minutes) => {
-    let endTime = new Date().getTime() + minutes * 60 * 1000 + 1000
+    let endTime = firebase.date().getTime() + minutes * 60 * 1000 + 1000
     firebase.db.child(this.path).update({
       endTime: endTime
     })
