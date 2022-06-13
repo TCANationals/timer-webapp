@@ -12,6 +12,14 @@ firebase.database().ref(".info/serverTimeOffset").on("value", (snapshot) => {
   console.log(`Detected server time offset of ${clientServerTimeOffset}\n   server time:  ${currentTime}\n   current time: ${(new Date())}`)
 });
 
+// Setup loop to try and keep time offset in sync, retry every minute
+setInterval(function() {
+  firebase.database().goOffline();
+  setTimeout(function() {
+    firebase.database().goOnline();
+  }, 500);
+}, 1000 * 60 * 5); // refresh every 5 minutes
+
 function getDate() {
   return new Date(Date.now() + clientServerTimeOffset)
 }
