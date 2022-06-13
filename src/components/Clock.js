@@ -4,6 +4,7 @@ import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 
 import { COLOURS, SIZE } from '../config/vars.js'
+import AdjustingInterval from '../modules/AdjustingInterval'
 
 @observer
 class Clock extends Component {
@@ -20,11 +21,15 @@ class Clock extends Component {
 
   componentWillMount() {
     this.getTime()
-    this.timer = window.setInterval(() => this.getTime(), 1000)
+    this.timer = new AdjustingInterval(() => this.getTime(), 1000)
+    this.timer.start()
   }
 
   componentWillUnmount() {
     window.clearInterval(this.timer)
+    if (this.timer) {
+      this.timer.stop()
+    }
   }
 
   getTime() {

@@ -4,51 +4,17 @@ import { observer } from 'mobx-react'
 import FontAwesome from 'react-fontawesome'
 
 import { APP_NAME, COLOURS, SIZE, BP } from '../config/vars.js'
+import AdjustingInterval from '../modules/AdjustingInterval'
 import TimerStore from '../stores/TimerStore'
 import UiState from '../stores/UiState'
 
 @observer
 class Timer extends Component {
 
-  /**
-   * Self-adjusting interval to account for drifting
-   * From https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
-   *
-   * @param {function} workFunc  Callback containing the work to be done
-   *                             for each interval
-   * @param {int}      interval  Interval speed (in milliseconds)
-   * @param {function} errorFunc (Optional) Callback to run if the drift
-   *                             exceeds interval
-   */
-  AdjustingInterval(workFunc, interval, errorFunc) {
-    var that = this;
-    var expected, timeout;
-    this.interval = interval;
-
-    this.start = function() {
-        expected = (Math.floor(new Date().getTime() / 1000) * 1000) + this.interval;
-        timeout = setTimeout(step, this.interval);
-    }
-
-    this.stop = function() {
-        clearTimeout(timeout);
-    }
-
-    function step() {
-        var drift = Date.now() - expected;
-        if (drift > that.interval) {
-            if (errorFunc) errorFunc();
-        }
-        workFunc();
-        expected += that.interval * Math.floor(drift / that.interval);
-        timeout = setTimeout(step, Math.max(0, that.interval-drift));
-    }
-  }
-
   componentWillMount() {
     TimerStore.subscribeToTimerUpdates()
     this.calculateTime()
-    TimerStore.timer.timerRef = new this.AdjustingInterval(() => this.calculateTime(), 1000)
+    TimerStore.timer.timerRef = new AdjustingInterval(() => this.calculateTime(), 1000)
     TimerStore.timer.timerRef.start()
   }
 
