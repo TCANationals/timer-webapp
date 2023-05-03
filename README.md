@@ -30,4 +30,7 @@ npm run start
 
 # build for production
 npm run build
+
+# deploy to firebase
+firebase deploy
 ```
