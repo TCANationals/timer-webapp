@@ -78,7 +78,8 @@ class Timer extends Component {
       this.setState({
         lastEnd: TimerStore.timer.endTime,
         lastCreated: TimerStore.timer.createdAt,
-        lastSound: 0
+        lastSound: 0,
+        playing: false,
       })
     }
 
