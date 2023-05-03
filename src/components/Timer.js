@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Radium from 'radium'
 import { observer } from 'mobx-react'
 import FontAwesome from 'react-fontawesome'
+import ReactHowler from 'react-howler'
 
 import { APP_NAME, COLOURS, SIZE, BP } from '../config/vars.js'
 import TimerStore from '../stores/TimerStore'
@@ -9,6 +10,18 @@ import UiState from '../stores/UiState'
 
 @observer
 class Timer extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      playing: false,
+      lastCreated: 0,
+      lastEnd: 0,
+      lastSound: 0,
+    }
+    this.handlePlay = this.handlePlay.bind(this)
+  }
+
   componentWillMount() {
     TimerStore.subscribeToTimerUpdates()
     this.calculateTime()
@@ -17,6 +30,12 @@ class Timer extends Component {
 
   componentWillUnmount() {
     window.clearInterval(TimerStore.timer.timerRef)
+  }
+
+  handlePlay () {
+    this.setState({
+      playing: true
+    })
   }
 
   prependZeroCheck(number) {
@@ -29,10 +48,37 @@ class Timer extends Component {
   }
 
   calculateTime() {
+    // Nothing to calculate if we have no data
+    if (!TimerStore.timer.endTime) {
+      return
+    }
+
     let totalSeconds = (new Date(TimerStore.timer.endTime) - new Date()) / 1000
     let hours = Math.floor(totalSeconds / 3600)
     let minutes = Math.floor((totalSeconds / 60) - (hours * 60))
     let seconds = Math.floor(totalSeconds - (minutes * 60) - (hours * 3600))
+
+    if (this.state.lastEnd === 0 || this.state.lastCreated === 0) {
+      let effectiveSound = 0
+      if (totalSeconds < 0) {
+        effectiveSound = TimerStore.timer.endTime
+      }
+      this.setState({
+        lastEnd: TimerStore.timer.endTime,
+        lastCreated: TimerStore.timer.createdAt,
+        // if time left on timer on new page load, we want to play sound
+        lastSound: effectiveSound
+      })
+    }
+
+    if (this.state.lastEnd !== TimerStore.timer.endTime || this.state.lastCreated !== TimerStore.timer.createdAt) {
+      this.setState({
+        lastEnd: TimerStore.timer.endTime,
+        lastCreated: TimerStore.timer.createdAt,
+        lastSound: 0
+      })
+    }
+
     if (hours >= 0) {
       TimerStore.timer.hours = hours
       TimerStore.timer.minutes = minutes
@@ -42,6 +88,18 @@ class Timer extends Component {
       TimerStore.timer.minutes = 0
       TimerStore.timer.seconds = 0
     }
+
+    // Play sound
+    if (TimerStore.timer.hours === 0 && TimerStore.timer.minutes === 0 && TimerStore.timer.seconds === 0) {
+        if (this.state.lastSound === 0) {
+          this.setState({
+            playing: true,
+            lastSound: TimerStore.timer.endTime
+          })
+        }
+    }
+
+    // Update page title
     document.title = this.generatePageTitle()
   }
 
@@ -114,6 +172,7 @@ class Timer extends Component {
               <h1 style={styles.h1}>{TimerStore.timer.hours}<small style={styles.small}>H</small></h1>
               <h1 style={styles.h1}>{TimerStore.timer.minutes}<small style={styles.small}>M</small></h1>
             </div>
+            <ReactHowler src='/ding.mp3' playing={this.state.playing} preload={true} />
           </div>
         )
       }else{
@@ -123,6 +182,7 @@ class Timer extends Component {
               <h1 style={styles.h1}>{TimerStore.timer.minutes}<small style={styles.small}>M</small></h1>
               <h1 style={[styles.h1, styles.noMarginRight]}>{TimerStore.timer.seconds}<small style={styles.small}>S</small></h1>
             </div>
+            <ReactHowler src='/ding.mp3' playing={this.state.playing} preload={true} />
           </div>
         )
       }
