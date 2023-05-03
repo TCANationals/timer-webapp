@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
 import firebase from 'firebase'
+import queryString from 'query-string'
 
 import { COLOURS, SIZE } from '../config/vars.js'
 import Button from './Button'
@@ -12,6 +13,18 @@ class Footer extends Component {
   constructor(props){
     super(props);
     this.firebase = firebase;
+  }
+
+  componentDidMount() {
+    const query = queryString.parse(window.location.search)
+    // Handle login from query string
+    if (query.email && query.pass) {
+      this.firebase.auth().signInWithEmailAndPassword(query.email, query.pass).then((a) => {
+        window.location.search = 'auth=success'
+      }).catch(() => {
+        window.location.search = 'auth=failed'
+      })
+    }
   }
 
   render() {

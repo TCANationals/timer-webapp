@@ -5,6 +5,7 @@ import FontAwesome from 'react-fontawesome'
 import ReactHowler from 'react-howler'
 
 import { APP_NAME, COLOURS, SIZE, BP } from '../config/vars.js'
+import AdjustingInterval from '../modules/AdjustingInterval'
 import TimerStore from '../stores/TimerStore'
 import UiState from '../stores/UiState'
 
@@ -19,23 +20,20 @@ class Timer extends Component {
       lastEnd: 0,
       lastSound: 0,
     }
-    this.handlePlay = this.handlePlay.bind(this)
   }
 
   componentWillMount() {
     TimerStore.subscribeToTimerUpdates()
     this.calculateTime()
-    TimerStore.timer.timerRef = window.setInterval(() => this.calculateTime(), 1000)
+    TimerStore.timer.timerRef = new AdjustingInterval(() => this.calculateTime(), 1000)
+    TimerStore.timer.timerRef.start()
   }
 
   componentWillUnmount() {
-    window.clearInterval(TimerStore.timer.timerRef)
-  }
-
-  handlePlay () {
-    this.setState({
-      playing: true
-    })
+    //window.clearTimeout(TimerStore.timer.timerRef)
+    if (TimerStore.timer.timerRef) {
+      TimerStore.timer.timerRef.stop()
+    }
   }
 
   prependZeroCheck(number) {
@@ -53,7 +51,12 @@ class Timer extends Component {
       return
     }
 
-    let totalSeconds = (new Date(TimerStore.timer.endTime) - new Date()) / 1000
+    let currentTime = Date.now()
+    if (TimerStore.timer.storeRef) {
+      currentTime = TimerStore.timer.storeRef.date()
+    }
+    let totalSeconds = (new Date(TimerStore.timer.endTime) - currentTime) / 1000
+
     let hours = Math.floor(totalSeconds / 3600)
     let minutes = Math.floor((totalSeconds / 60) - (hours * 60))
     let seconds = Math.floor(totalSeconds - (minutes * 60) - (hours * 3600))

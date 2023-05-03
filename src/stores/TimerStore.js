@@ -9,6 +9,7 @@ class TimerStore {
   @observable message = ''
   @observable timer = {
     timerRef: null,
+    storeRef: null,
     createdAt: null,
     endTime: null,
     hours: 0,
@@ -24,6 +25,7 @@ class TimerStore {
   @action resetTimer() {
     this.timer = {
       timerRef: null,
+      storeRef: null,
       createdAt: null,
       endTime: null,
       hours: 0,
@@ -83,6 +85,7 @@ class TimerStore {
       let data = snapshot.val()
       this.timer.createdAt = data.createdAt
       this.timer.endTime = data.endTime
+      this.timer.storeRef = firebase
       this.message = data.message
     })
     UiState.loading = false
@@ -104,7 +107,7 @@ class TimerStore {
   }
 
   setTime = (minutes) => {
-    let endTime = new Date().getTime() + minutes * 60 * 1000 + 1000
+    let endTime = firebase.date().getTime() + minutes * 60 * 1000 + 1000
     firebase.db.child(this.path).update({
       endTime: endTime
     })
